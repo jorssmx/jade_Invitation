@@ -1,0 +1,58 @@
+/* Right to Left */
+.show-n-x{
+    opacity: 0;
+    transform: translateX(150px);
+    transition: all 2s ease;
+}
+
+.active-n-x{
+    transform: translateX(0px);
+    opacity: 1;
+}
+
+/*Pasitive X Left to Right */
+.show-p-x{
+    opacity: 0;
+    transform: translateX(-150px);
+    transition: all 2s ease;
+}
+
+.active-p-x{
+    transform: translateX(0px);
+    opacity: 1;
+}
+
+
+/*Positive Y Bottom to Top */
+.show-p-y{
+    opacity: 0;
+    transform: translateY(150px);
+    transition: all 2s ease;
+}
+
+ .active-p-y{
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+/*Negative Y Top to Bottom */
+.show-n-y{
+    opacity: 0;
+    transform: translateY(-150px);
+    transition: all 2s ease;
+}
+
+ .active-n-y{
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+/*None to Show */
+.show{
+    opacity: 0;
+    transition: all 4s ease;
+}
+
+ .active{
+    opacity: 1;
+}
