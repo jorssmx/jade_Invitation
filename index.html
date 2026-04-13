@@ -656,7 +656,7 @@ embed[type="application/pdf"][src="about:blank"] { filter: invert(100%) contrast
                 <div class="icono-inv" data-icono="buzon" style="mask-image: url(&quot;../../../Iconos/buzon.png&quot;);"></div>
                 <p class="texto" style="width: 90%;">Dejame un lindo mensaje por mis XV años, recibo tus palabras con cariño en este buzón:</p>
                 <textarea class="mensaje" id="mensajeInput" placeholder="Escribe tu mensaje aquí"></textarea>
-                <div class="boton aparecer" style="width: 30%;" onclick="enviarMensaje(&#39;521&#39;, &#39;5583900432&#39;)">Enviar Mensaje</div>
+                <div class="boton aparecer" style="width: 30%;" onclick="enviarMensaje('521', '5583900432')">Enviar Mensaje</div>
             </div>
             
             <script>
@@ -801,7 +801,9 @@ embed[type="application/pdf"][src="about:blank"] { filter: invert(100%) contrast
         <section id="fixed-items">
             <button id="toggleButton">
                 <div class="bocina-wrapper">
-                    <div id="soundIcon" class="bocina-icon" style="mask-image: url(&quot;../../../Iconos/play.png&quot;);"></div>
+                    <svg id="soundIcon" class="bocina-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path fill="currentColor" d="M8 5v14l11-7z"></path>
+                    </svg>
                 </div>
             </button>
             <audio id="music" autoplay="" loop="">
@@ -809,13 +811,6 @@ embed[type="application/pdf"][src="about:blank"] { filter: invert(100%) contrast
                 Tu navegador no soporta la reproducción de audio.
             </audio>
         </section>
-
-        <script>
-            let soundIcon = document.querySelector("#soundIcon");
-            soundIcon.addEventListener("click", ()=>{
-                soundIcon.classList.remove("boom");
-            })
-        </script>
 
         <script defer="" src="./Sharon Yaibelis_files/cuenta-regresiva-automatic.js"></script>
 
