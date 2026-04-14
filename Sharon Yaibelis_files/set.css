@@ -247,6 +247,10 @@ body{
     flex-direction: column;
 }
 
+body.no-scroll{
+    overflow: hidden;
+}
+
 :root{
     --v0s: 0.0vw;
     --v1s: 0.2vw;
