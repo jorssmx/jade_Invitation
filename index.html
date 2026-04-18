@@ -243,6 +243,20 @@
         will-change: transform, opacity, filter;
       }
 
+      .page.page-home{
+        padding-top: 22px;
+        gap: 14px;
+      }
+
+      .page.page-home .photo-frame{
+        width: min(68%, 240px);
+        margin: 2px auto 0;
+      }
+
+      .page.page-home .divider{
+        margin: 2px 0;
+      }
+
       .page.is-visible{
         display: grid;
         opacity: 1;
@@ -308,10 +322,14 @@
         align-items: baseline;
         gap: 10px;
         font-weight: 900;
+        justify-content: center;
+        align-self: center;
+        text-align: center;
+        font-size: clamp(18px, 5.4vw, 24px);
       }
 
       .date .d{
-        font-size: 30px;
+        font-size: inherit;
       }
 
       .date .sep{
@@ -323,7 +341,7 @@
       }
 
       .date .m, .date .y{
-        font-size: 22px;
+        font-size: inherit;
         letter-spacing: .02em;
       }
 
@@ -414,6 +432,7 @@
 
       body.is-open .cover{
         transform: rotateY(-150deg) translateZ(4px);
+        pointer-events: none;
       }
 
       body.is-open{
@@ -524,10 +543,66 @@
         pointer-events: none;
       }
 
+      .music-toggle{
+        position: absolute;
+        top: 22px;
+        right: 18px;
+        z-index: 12;
+        width: 58px;
+        height: 58px;
+        border-radius: 999px;
+        border: 2px solid rgba(255,255,255,.42);
+        background: rgba(22,22,24,.42);
+        backdrop-filter: blur(2px);
+        box-shadow: 0 14px 30px rgba(0,0,0,.26);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(-8px);
+        pointer-events: none;
+        transition: opacity 220ms ease, transform 220ms ease;
+        touch-action: manipulation;
+      }
+
+      body.is-open .music-toggle{
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .music-toggle svg{
+        width: 30px;
+        height: 30px;
+        color: #f2f2f2;
+        display: block;
+        filter: drop-shadow(0 2px 2px rgba(0,0,0,.3));
+      }
+
+      .music-toggle.is-playing svg{
+        animation: pulseMusic 1.5s ease-in-out infinite;
+      }
+
+      .music-toggle .music-slash{
+        opacity: 0;
+        transition: opacity 180ms ease;
+      }
+
+      .music-toggle.is-muted .music-slash{
+        opacity: 1;
+      }
+
+      @keyframes pulseMusic{
+        0% { transform: scale(1); }
+        50% { transform: scale(.88); }
+        100% { transform: scale(1); }
+      }
+
       @media (prefers-reduced-motion: reduce){
         .cover{ transition: none; }
         .page{ animation: none !important; }
         .open-btn{ transition: none; }
+        .music-toggle svg{ animation: none !important; }
       }
     </style>
   </head>
@@ -535,7 +610,7 @@
     <main class="stage" aria-label="Invitación de XV años">
       <div class="book-wrap">
         <div class="topbar">
-          <div class="chip hide-when-closed" id="dateChip" aria-hidden="true"><b>02</b> / <span id="monthChip">Mayo</span> / <span id="yearChip">2026</span></div>
+          <div class="chip hide-when-closed" id="dateChip" aria-hidden="true"><b>02</b> / <span id="monthChip">MAYO</span> / <span id="yearChip">2026</span></div>
         </div>
 
         <div class="book" role="region" aria-label="Libro de invitación">
@@ -543,20 +618,22 @@
 
           <section class="pages-shell" aria-label="Páginas">
             <div class="pages" id="pages" tabindex="0">
-              <section class="page" data-page="1" aria-label="Página 1">
+              <section class="page page-home" data-page="1" aria-label="Página 1">
                 <div class="kicker">Mis XV</div>
                 <h1 class="name">
                   <span class="gold">Jade</span> Geraldine
                 </h1>
-                <div class="divider"></div>
+                <div class="photo-frame" aria-label="Foto">
+                  <img class="photo" src="./foto.png" alt="Foto de Jade Geraldine" loading="eager" decoding="async" />
+                </div>
                 <div class="date" aria-label="Fecha del evento">
                   <div class="d">02</div>
                   <div class="sep" aria-hidden="true"></div>
-                  <div class="m">Mayo</div>
+                  <div class="m">MAYO</div>
                   <div class="sep" aria-hidden="true"></div>
                   <div class="y">2026</div>
                 </div>
-                <p class="text">Falta muy poquito. Guarda la fecha y acompáñame a celebrar este día tan especial.</p>
+                <div class="divider"></div>
                 <div class="countdown" aria-label="Cuenta regresiva">
                   <div class="cd-item">
                     <div class="cd-num" id="cdDays">--</div>
@@ -602,12 +679,22 @@
                 <p class="text">Aquí después agregamos: ceremonia, recepción, ubicación, dress code, confirmación y galería.</p>
               </section>
             </div>
+            <button class="music-toggle" id="musicToggle" type="button" aria-label="Reproducir música">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path id="musicNotePath" fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"></path>
+                <path class="music-slash" id="musicSlashPath" d="M5 19L19 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+              </svg>
+            </button>
           </section>
 
           <div class="pager" aria-label="Navegación de páginas">
             <button type="button" class="pager-btn is-hidden" id="prevPage">Anterior</button>
             <button type="button" class="pager-btn" id="nextPage">Siguiente</button>
           </div>
+
+          <audio id="music" preload="auto" loop>
+            <source src="./song.mp4" type="audio/mp4" />
+          </audio>
 
           <section class="cover" aria-label="Portada">
             <div class="cover-inner">
@@ -631,6 +718,9 @@
         const dateChip = document.getElementById('dateChip');
         const prevPageBtn = document.getElementById('prevPage');
         const nextPageBtn = document.getElementById('nextPage');
+        const music = document.getElementById('music');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicSlashPath = document.getElementById('musicSlashPath');
         const pageEls = Array.from(document.querySelectorAll('.page'));
 
         const cdDays = document.getElementById('cdDays');
@@ -664,6 +754,28 @@
 
         updateCountdown();
         window.setInterval(updateCountdown, 1000);
+
+        function updateMusicButton() {
+          const isPlaying = !music.paused && !music.ended;
+          musicToggle.classList.toggle('is-playing', isPlaying);
+          musicToggle.classList.toggle('is-muted', !isPlaying);
+          musicSlashPath.style.opacity = isPlaying ? '0' : '1';
+          musicToggle.setAttribute('aria-label', isPlaying ? 'Pausar música' : 'Reproducir música');
+        }
+
+        function setMusicPlaying(shouldPlay) {
+          if (shouldPlay) {
+            music.muted = false;
+            music.volume = 0.7;
+            music.play()
+              .then(updateMusicButton)
+              .catch(updateMusicButton);
+            return;
+          }
+          music.pause();
+          music.muted = true;
+          updateMusicButton();
+        }
 
         function updateNavButtons() {
           prevPageBtn.classList.toggle('is-hidden', currentPageIndex === 0);
@@ -714,6 +826,7 @@
 
         openBtn.addEventListener('click', () => {
           document.body.classList.add('is-open');
+          setMusicPlaying(true);
           currentPageIndex = 0;
           pageEls.forEach((el, idx) => {
             clearAnimClasses(el);
@@ -722,6 +835,24 @@
           });
           updateNavButtons();
         });
+
+        let lastToggleAt = 0;
+        function toggleMusic(event) {
+          if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          const now = Date.now();
+          if (now - lastToggleAt < 350) return;
+          lastToggleAt = now;
+          setMusicPlaying(music.paused);
+        }
+
+        musicToggle.addEventListener('click', toggleMusic);
+        musicToggle.addEventListener('pointerup', toggleMusic);
+
+        music.addEventListener('play', updateMusicButton);
+        music.addEventListener('pause', updateMusicButton);
 
         nextPageBtn.addEventListener('click', () => {
           changePage(currentPageIndex + 1, 'next');
@@ -733,6 +864,8 @@
 
         pageEls.forEach((el) => el.classList.remove('is-active', 'is-visible', 'is-under'));
         pageEls[0].classList.add('is-active', 'is-visible');
+        music.muted = true;
+        updateMusicButton();
         updateNavButtons();
       })();
     </script>
