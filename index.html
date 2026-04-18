@@ -215,6 +215,10 @@
         overflow: visible;
       }
 
+      body.is-open .pages-shell{
+        z-index: 10;
+      }
+
       .pages{
         height: 100%;
         overflow: visible;
@@ -433,6 +437,7 @@
       body.is-open .cover{
         transform: rotateY(-150deg) translateZ(4px);
         pointer-events: none;
+        z-index: 3;
       }
 
       body.is-open{
@@ -679,13 +684,14 @@
                 <p class="text">Aquí después agregamos: ceremonia, recepción, ubicación, dress code, confirmación y galería.</p>
               </section>
             </div>
-            <button class="music-toggle" id="musicToggle" type="button" aria-label="Reproducir música">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path id="musicNotePath" fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"></path>
-                <path class="music-slash" id="musicSlashPath" d="M5 19L19 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
-              </svg>
-            </button>
           </section>
+
+          <button class="music-toggle" id="musicToggle" type="button" aria-label="Reproducir música">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path id="musicNotePath" fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"></path>
+              <path class="music-slash" id="musicSlashPath" d="M5 19L19 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+            </svg>
+          </button>
 
           <div class="pager" aria-label="Navegación de páginas">
             <button type="button" class="pager-btn is-hidden" id="prevPage">Anterior</button>
@@ -837,19 +843,36 @@
         });
 
         let lastToggleAt = 0;
+        let ignoreNextClick = false;
         function toggleMusic(event) {
           if (event) {
             event.preventDefault();
             event.stopPropagation();
           }
           const now = Date.now();
-          if (now - lastToggleAt < 350) return;
+          if (now - lastToggleAt < 420) return;
           lastToggleAt = now;
           setMusicPlaying(music.paused);
         }
 
-        musicToggle.addEventListener('click', toggleMusic);
-        musicToggle.addEventListener('pointerup', toggleMusic);
+        musicToggle.addEventListener('pointerdown', (event) => {
+          ignoreNextClick = true;
+          toggleMusic(event);
+        }, { passive: false });
+
+        musicToggle.addEventListener('touchstart', (event) => {
+          toggleMusic(event);
+        }, { passive: false });
+
+        musicToggle.addEventListener('click', (event) => {
+          if (ignoreNextClick) {
+            ignoreNextClick = false;
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          toggleMusic(event);
+        });
 
         music.addEventListener('play', updateMusicButton);
         music.addEventListener('pause', updateMusicButton);
