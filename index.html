@@ -468,7 +468,7 @@
       .crown-gif{
         position: absolute;
         left: calc(50% + 18px);
-        top: -60px;
+        top: -74px;
         transform: translateX(-50%);
         width: clamp(152px, 40vw, 224px);
         height: auto;
@@ -860,7 +860,7 @@
                   <span class="gold">Jade</span> Geraldine
                 </h1>
                 <div class="photo-stack" aria-label="Foto">
-                  <img class="crown-gif" src="./corona.gif" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                  <img class="crown-gif" src="./corona.gif" alt="" aria-hidden="true" loading="eager" decoding="sync" />
                   <div class="photo-frame">
                     <img class="photo" src="./foto.png" alt="Foto de Jade Geraldine" loading="eager" decoding="async" />
                   </div>
@@ -919,13 +919,13 @@ guardaré estos XV como mi mejor memoria.</p>
                 <div class="divider"></div>
                 <p class="poem"><b>Papás:</b> Ana Belén Corrales Carrillo</p>
                 <p class="poem"><b>Padrinos:</b> Eugenia Carrillo Sánchez<br />Lázaro Corrales Hernández</p>
-                <img class="thanks-gif" src="./gracias.gif" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                <img class="thanks-gif" src="./gracias.gif" alt="" aria-hidden="true" loading="eager" decoding="sync" />
               </section>
 
               <section class="page page-ceremony" data-page="4" aria-label="Página 4">
                 <div class="kicker">Ceremonia</div>
                 <h2 class="title ceremony-title">Parroquia del Sagrado<br />Corazón de<br />Jesús</h2>
-                <img class="church-gif" src="./iglesia.gif" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                <img class="church-gif" src="./iglesia.gif" alt="" aria-hidden="true" loading="eager" decoding="sync" />
                 <div class="divider"></div>
                 <div class="map-card" aria-label="Mapa de ubicación">
                   <iframe
@@ -957,7 +957,7 @@ guardaré estos XV como mi mejor memoria.</p>
                 </div>
                 <p class="poem"><b>Dirección:</b> Gral. Mariano Salas 198, Triunfo de la República, Gustavo A. Madero, 07070 Ciudad de México, CDMX</p>
                 <p class="poem"><b>Hora:</b> 8:30 PM</p>
-                <img class="party-gif" src="./party2.gif" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                <img class="party-gif" src="./party2.gif" alt="" aria-hidden="true" loading="eager" decoding="sync" />
               </section>
 
               <section class="page page-rsvp" data-page="6" aria-label="Página 6">
@@ -1004,7 +1004,7 @@ guardaré estos XV como mi mejor memoria.</p>
           <section class="cover" aria-label="Portada">
             <div class="cover-inner">
               <div class="badge">Invitación</div>
-              <img class="balloons-gif" src="./globos.gif" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+              <img class="balloons-gif" src="./globos.gif" alt="" aria-hidden="true" loading="eager" decoding="sync" />
               <h1 class="title">
                 <span style="font-size:.52em; font-weight:800; letter-spacing:.10em; text-transform:uppercase;">Mis XV</span><br />
                 <span class="gold">Jade</span> Geraldine
@@ -1063,6 +1063,24 @@ guardaré estos XV como mi mejor memoria.</p>
 
         updateCountdown();
         window.setInterval(updateCountdown, 1000);
+
+        function ensureGifsOnIOS() {
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+          if (!isIOS) return;
+
+          const gifImages = Array.from(document.querySelectorAll('img[src$=".gif"]'));
+          gifImages.forEach((img) => {
+            img.loading = 'eager';
+            img.decoding = 'sync';
+            const src = img.getAttribute('src');
+            if (!src) return;
+            img.setAttribute('src', src);
+          });
+        }
+
+        ensureGifsOnIOS();
 
         function updateMusicButton() {
           const isPlaying = !music.paused && !music.ended;
@@ -1136,6 +1154,7 @@ guardaré estos XV como mi mejor memoria.</p>
 
         openBtn.addEventListener('click', () => {
           document.body.classList.add('is-open');
+          ensureGifsOnIOS();
           setMusicPlaying(true);
           currentPageIndex = 0;
           pageEls.forEach((el, idx) => {
