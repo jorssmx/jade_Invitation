@@ -266,6 +266,10 @@
         opacity: 1;
       }
 
+      .page.is-shelved{
+        display: none !important;
+      }
+
       .page.is-active{
         z-index: 2;
       }
@@ -500,29 +504,30 @@
 
       .pager{
         position: absolute;
-        left: 14px;
-        right: 14px;
-        bottom: 14px;
-        z-index: 8;
+        left: 28px;
+        right: 28px;
+        bottom: 34px;
+        z-index: 14;
         display: flex;
         justify-content: space-between;
         gap: 10px;
         opacity: 0;
-        transform: translateY(10px);
+        --pager-z: 130px;
+        transform: translate3d(0,10px,var(--pager-z));
         pointer-events: none;
         transition: opacity 240ms ease, transform 240ms ease;
       }
 
       body.is-open .pager{
         opacity: 1;
-        transform: translateY(0);
+        transform: translate3d(0,0,var(--pager-z));
         pointer-events: auto;
       }
 
       .pager-btn{
-        border: 1px solid rgba(0,0,0,.82);
-        background: rgba(0,0,0,.86);
-        color: rgba(255,255,255,.95);
+        border: 1px solid rgba(0,0,0,.55);
+        background: rgba(255,255,255,.92);
+        color: rgba(0,0,0,.92);
         border-radius: 12px;
         padding: 10px 16px;
         font-size: 14px;
@@ -531,6 +536,27 @@
         min-width: 112px;
         box-shadow: 0 12px 28px rgba(0,0,0,.12);
         transition: transform 140ms ease, opacity 140ms ease;
+      }
+
+      .pager-indicator{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: 800;
+        letter-spacing: .08em;
+        color: rgba(0,0,0,.45);
+        font-size: 12px;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .poem{
+        margin: 0;
+        color: rgba(18,18,18,.78);
+        line-height: 1.7;
+        font-size: 14px;
+        white-space: pre-line;
       }
 
       .pager-btn:active{
@@ -661,18 +687,7 @@
                 </div>
               </section>
 
-              <section class="page" data-page="2" aria-label="Página 2">
-                <h2 class="title" style="margin:0">
-                  <span class="gold">Te</span> invito a celebrar
-                </h2>
-                <p class="text">
-                  Este diseño es tipo libro/cuaderno: al hacer scroll vas pasando páginas. En el siguiente paso agregamos misa/recepción, mapa, fotos, confirmación y música.
-                </p>
-                <div class="divider"></div>
-                <p class="text" style="font-weight:800">Por ahora ya queda listo: portada + animación de abrir + cuenta regresiva.</p>
-              </section>
-
-              <section class="page" data-page="3" aria-label="Página 3">
+              <section class="page is-shelved" data-page="3" aria-label="Página 3">
                 <div class="kicker">Detalles</div>
                 <h2 class="title" style="margin:0">
                   <span class="gold">Jade</span> Geraldine
@@ -684,6 +699,24 @@
                 <div class="divider"></div>
                 <p class="text" style="font-weight:800">Sábado 02 de Mayo de 2026</p>
                 <p class="text">Aquí después agregamos: ceremonia, recepción, ubicación, dress code, confirmación y galería.</p>
+              </section>
+
+              <section class="page" data-page="2" aria-label="Página 2">
+                <div class="kicker">Poema</div>
+                <h2 class="title" style="margin:0">
+                  XV Años: <span class="gold">Un recuerdo que perdura</span>
+                </h2>
+                <div class="divider"></div>
+                <p class="poem">Quince años no son solo tiempo, son huellas, risas y un gran camino.
+Hoy que el festejo ha llegado a su calma, el agradecimiento florece en mi alma.</p>
+                <p class="poem">Gracias por ser cómplices de este momento,
+por el cariño, el apoyo y el sentimiento.
+Llevo conmigo el recuerdo de este día,
+y el amor de quienes son mi mayor alegría.</p>
+                <p class="poem">Comienza una etapa, un nuevo destino,
+más firme, más fuerte y más definido.
+Gracias por ser parte de mi historia,
+guardaré estos XV como mi mejor memoria.</p>
               </section>
             </div>
           </section>
@@ -697,6 +730,7 @@
 
           <div class="pager" aria-label="Navegación de páginas">
             <button type="button" class="pager-btn is-hidden" id="prevPage">Anterior</button>
+            <div class="pager-indicator" id="pageIndicator" aria-label="Número de página">1</div>
             <button type="button" class="pager-btn" id="nextPage">Siguiente</button>
           </div>
 
@@ -726,10 +760,11 @@
         const dateChip = document.getElementById('dateChip');
         const prevPageBtn = document.getElementById('prevPage');
         const nextPageBtn = document.getElementById('nextPage');
+        const pageIndicator = document.getElementById('pageIndicator');
         const music = document.getElementById('music');
         const musicToggle = document.getElementById('musicToggle');
         const musicSlashPath = document.getElementById('musicSlashPath');
-        const pageEls = Array.from(document.querySelectorAll('.page'));
+        const pageEls = Array.from(document.querySelectorAll('.page:not(.is-shelved)'));
 
         const cdDays = document.getElementById('cdDays');
         const cdHours = document.getElementById('cdHours');
@@ -788,7 +823,8 @@
         function updateNavButtons() {
           prevPageBtn.classList.toggle('is-hidden', currentPageIndex === 0);
           nextPageBtn.classList.toggle('is-disabled', currentPageIndex === pageEls.length - 1);
-          dateChip.classList.toggle('is-hidden', currentPageIndex === 0);
+          dateChip.classList.add('is-hidden');
+          pageIndicator.textContent = String(currentPageIndex + 1);
         }
 
         function clearAnimClasses(el) {
