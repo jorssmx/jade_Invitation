@@ -269,6 +269,10 @@
         line-height: 1.55;
       }
 
+      .page.page-rsvp{
+        gap: 12px;
+      }
+
       .page.page-home .photo-stack{
         width: min(68%, 240px);
         margin: 30px auto 0;
@@ -691,6 +695,73 @@
         filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
       }
 
+      .rsvp-form{
+        display: grid;
+        gap: 10px;
+      }
+
+      .rsvp-question{
+        margin: 0;
+        color: rgba(18,18,18,.82);
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .rsvp-options{
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .rsvp-option{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.14);
+        background: rgba(255,255,255,.70);
+        font-size: 14px;
+        font-weight: 700;
+        color: rgba(18,18,18,.82);
+      }
+
+      .rsvp-label{
+        margin: 0;
+        color: rgba(18,18,18,.78);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .rsvp-input{
+        width: 100%;
+        border: 1px solid rgba(0,0,0,.16);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font: inherit;
+        color: rgba(18,18,18,.88);
+        background: rgba(255,255,255,.82);
+        resize: none;
+      }
+
+      .rsvp-input:focus{
+        outline: 2px solid rgba(194,145,24,.35);
+        outline-offset: 1px;
+      }
+
+      .rsvp-submit{
+        border: 1px solid rgba(0,0,0,.42);
+        background: rgba(255,255,255,.92);
+        color: rgba(0,0,0,.92);
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        width: fit-content;
+        box-shadow: 0 12px 24px rgba(0,0,0,.10);
+      }
+
       .pager-btn:active{
         transform: scale(.98);
       }
@@ -822,20 +893,6 @@
                 </div>
               </section>
 
-              <section class="page is-shelved" data-page="6" aria-label="Página 6">
-                <div class="kicker">Detalles</div>
-                <h2 class="title" style="margin:0">
-                  <span class="gold">Jade</span> Geraldine
-                </h2>
-                <div class="photo-frame" aria-label="Foto">
-                  <img class="photo" src="./foto.png" alt="Foto de Jade Geraldine" loading="lazy" decoding="async" />
-                </div>
-                <p class="text">Página extra para que puedas probar el efecto de “pasar hoja” con Siguiente/Anterior.</p>
-                <div class="divider"></div>
-                <p class="text" style="font-weight:800">Sábado 02 de Mayo de 2026</p>
-                <p class="text">Aquí después agregamos: ceremonia, recepción, ubicación, dress code, confirmación y galería.</p>
-              </section>
-
               <section class="page" data-page="2" aria-label="Página 2">
                 <div class="kicker">Poema</div>
                 <h2 class="title" style="margin:0">
@@ -902,6 +959,28 @@ guardaré estos XV como mi mejor memoria.</p>
                 <p class="poem"><b>Hora:</b> 8:30 PM</p>
                 <img class="party-gif" src="./party2.gif" alt="" aria-hidden="true" loading="lazy" decoding="async" />
               </section>
+
+              <section class="page page-rsvp" data-page="6" aria-label="Página 6">
+                <div class="kicker">Confirmación</div>
+                <h2 class="title" style="margin:0; font-size: clamp(30px, 7vw, 42px);">Asistencia</h2>
+                <div class="divider"></div>
+                <p class="rsvp-question">¿Podrás acompañarnos en la fiesta?</p>
+                <form class="rsvp-form" id="rsvpForm">
+                  <div class="rsvp-options" role="radiogroup" aria-label="Confirmación de asistencia">
+                    <label class="rsvp-option">
+                      <input type="radio" name="attendance" value="Si" />
+                      Sí, asisto
+                    </label>
+                    <label class="rsvp-option">
+                      <input type="radio" name="attendance" value="No" />
+                      No podré asistir
+                    </label>
+                  </div>
+                  <p class="rsvp-label">Nombres de las personas que asistirán (si aplica):</p>
+                  <textarea class="rsvp-input" id="rsvpNames" rows="4" placeholder="Ejemplo: Ana Pérez, Luis García"></textarea>
+                  <button class="rsvp-submit" type="submit">Enviar por WhatsApp</button>
+                </form>
+              </section>
             </div>
           </section>
 
@@ -949,6 +1028,8 @@ guardaré estos XV como mi mejor memoria.</p>
         const music = document.getElementById('music');
         const musicToggle = document.getElementById('musicToggle');
         const musicSlashPath = document.getElementById('musicSlashPath');
+        const rsvpForm = document.getElementById('rsvpForm');
+        const rsvpNames = document.getElementById('rsvpNames');
         const pageEls = Array.from(document.querySelectorAll('.page:not(.is-shelved)'));
 
         const cdDays = document.getElementById('cdDays');
@@ -1099,6 +1180,39 @@ guardaré estos XV como mi mejor memoria.</p>
         prevPageBtn.addEventListener('click', () => {
           changePage(currentPageIndex - 1, 'prev');
         });
+
+        if (rsvpForm) {
+          rsvpForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const selected = rsvpForm.querySelector('input[name="attendance"]:checked');
+            if (!selected) {
+              window.alert('Por favor selecciona si asistirás o no.');
+              return;
+            }
+
+            const names = (rsvpNames?.value || '').trim();
+            if (selected.value === 'Si' && !names) {
+              window.alert('Por favor escribe los nombres de las personas que asistirán.');
+              return;
+            }
+
+            const phone = '525656663677';
+            const messageLines = [
+              'Hola, quiero confirmar asistencia a la fiesta de XV de Jade Geraldine.',
+              `Asistencia: ${selected.value}`
+            ];
+
+            if (selected.value === 'Si') {
+              messageLines.push(`Nombres de asistentes: ${names}`);
+            } else if (names) {
+              messageLines.push(`Comentario: ${names}`);
+            }
+
+            const message = encodeURIComponent(messageLines.join('\n'));
+            const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
+            window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+          });
+        }
 
         pageEls.forEach((el) => el.classList.remove('is-active', 'is-visible', 'is-under'));
         pageEls[0].classList.add('is-active', 'is-visible');
