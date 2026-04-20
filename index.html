@@ -392,6 +392,10 @@
         box-shadow: 0 16px 40px rgba(0,0,0,.14);
       }
 
+      body.is-ios .page.page-home .countdown{
+        margin-top: -18px;
+      }
+
       .cd-item{
         display: grid;
         justify-items: center;
@@ -1069,6 +1073,8 @@ guardaré estos XV como mi mejor memoria.</p>
             || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
           if (!isIOS) return;
+
+          document.body.classList.add('is-ios');
 
           const gifImages = Array.from(document.querySelectorAll('img[src$=".gif"]'));
           gifImages.forEach((img) => {
